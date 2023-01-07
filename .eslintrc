@@ -12,6 +12,15 @@
       "prettier"
     ],
     "rules": {
-        "prettier/prettier": 2
+        "prettier/prettier": 2,
+        "camelcase": "warn",
+        "arrow-body-style": "warn",
+        "capitalized-comments": "warn",
+        "curly": "warn",
+        "eqeqeq": "warn",
+        "new-cap": "warn",
+        "no-eval": "warn",
+        "no-extra-semi": "warn",
+        "no-unused-expressions": "warn"
     }
   }
