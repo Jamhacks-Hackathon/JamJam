@@ -21,15 +21,18 @@ class CRUD {
    *
    * @param model
    * @param docs
-   * @returns
-   * @summary Why the fuck does linting make the code format into the way that doesn't work
+   * @returns doc
+   * @summary Returns doc object which has data requested
    */
   async readData(model: typeof mongoose.Model, docs: object): Promise<unknown> {
+    let variable = `''`;
     if (await model.exists(docs)) {
-      await model.findOne(docs).then((doc) => doc);
+      await model.findOne(docs).then((doc) => {
+        variable = doc;
+      });
+      return variable;
     }
-
-    return `''`;
+    return "Doesn't exist";
   }
 
   /**

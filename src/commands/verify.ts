@@ -1,4 +1,5 @@
 import { Discord } from '../index';
+
 export = {
   data: new Discord.SlashCommandBuilder()
     .setName('verify')

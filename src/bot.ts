@@ -20,7 +20,7 @@ class Bot {
     mongo(); // Connecting to database
   }
   /**
-   *
+   * @summary Registers all of the commands
    */
   public async registerCommands(): Promise<void> {
     const COMMANDS_PATH = path.join(__dirname, './commands');
@@ -40,7 +40,9 @@ class Bot {
       }
     }
   }
-
+  /**
+   * @summary Registers all of the events
+   */
   public async registerEvents(): Promise<void> {
     const EVENTS_PATH = path.join(__dirname, 'events');
     const EVENTS_FILE = fs
@@ -51,6 +53,7 @@ class Bot {
       const FILE_PATH = path.join(EVENTS_PATH, FILE);
       const EVENT = await import(FILE_PATH);
       if (EVENT.once) {
+        // Executes the event once if it can only be executed once
         this.CLIENT.once(EVENT.name, (...args) => EVENT.execute(...args));
       } else {
         this.CLIENT.on(EVENT.name, (...args) => EVENT.execute(...args));
@@ -59,7 +62,7 @@ class Bot {
   }
 
   /**
-   * Connects to the Discord Client
+   * @summary Connects to the Discord Client
    */
   public connectClient(): void {
     this.CLIENT.login(this._TOKEN);

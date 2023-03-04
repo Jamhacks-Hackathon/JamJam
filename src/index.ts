@@ -5,14 +5,14 @@ import { CRUD } from './database';
 import Bot from './bot';
 const BOT = new Bot(process.env.TOKEN as string);
 
-// Running the bot
-// BOT.CLIENT.on('ready', () => {
-//   console.log(`${BOT.CLIENT.user?.username} is ready!`);
-// });
-// BOT.connectDB();
-// Registers all the commands!
+// Connects to the Mongo Database
+BOT.connectDB();
+// Registers all the events!
 BOT.registerEvents();
+// Registers all the commands!
 BOT.registerCommands();
+// Connects to the Discord Client
 BOT.connectClient();
 
+// Exports
 export { CRUD, Discord };
