@@ -56,6 +56,10 @@ class CRUD {
     model: typeof mongoose.Model,
     docs: object
   ): Promise<boolean> {
+    if (await model.exists(docs)) {
+      await model.deleteOne(docs);
+      return true;
+    }
     return false;
   }
 }
