@@ -30,8 +30,5 @@ export = {
         });
       }
     }
-    // if (interaction.commandName === 'verify') {
-    //   interaction.reply({ content: 'JamJam' });
-    // }
   }
 };
