@@ -32,12 +32,48 @@ class Bot {
       const COMMAND = await import(FILE_PATH);
       if ('data' in COMMAND || 'execute' in COMMAND) {
         this.COMMAND_MAP.set(COMMAND.data.name, COMMAND);
-        console.log(`${COMMAND} registered in ${COMMANDS_PATH}`);
+        console.log(`${COMMAND.data.name} registered in ${COMMANDS_PATH}`);
       } else {
         console.log(
           `[WARNING] The command at ${FILE_PATH} is missing a required "data" or "execute" property.`
         );
       }
+    }
+    // Const REST = new Discord.REST({ version: '10 ' }).setToken(
+    //   Process.env.TOKEN as string
+    // );
+    // Const DATA = await REST.put(
+    //   Discord.Routes.applicationGuildCommands(
+    //     (process.env.CLIENT_ID as string, process.env.GUILD_ID as string),
+    //     { body: this.COMMAND_MAP }
+    //   )
+    // );
+  }
+
+  public async loadCommands(): Promise<void> {
+    const COMMANDS = [];
+    const COMMANDS_PATH = path.join(__dirname, './commands');
+    const COMMAND_FILES = fs
+      .readdirSync(COMMANDS_PATH)
+      .filter((file) => file.endsWith('.ts'));
+    for (const FILE of COMMAND_FILES) {
+      const COMMAND = await import(`./commands/${FILE}`);
+      COMMANDS.push(COMMAND.data.toJSON());
+    }
+
+    const REST = new Discord.REST({ version: '10' }).setToken(
+      process.env.TOKEN as string
+    );
+    try {
+      const DATA: any = await REST.put(
+        Discord.Routes.applicationCommands(process.env.CLIENT_ID as string),
+        { body: COMMANDS }
+      );
+      console.log(
+        `Successfully loaded ${DATA.length} application slash commands`
+      );
+    } catch (error) {
+      console.log(error);
     }
   }
   /**
@@ -60,7 +96,6 @@ class Bot {
       }
     }
   }
-
   /**
    * @summary Connects to the Discord Client
    */

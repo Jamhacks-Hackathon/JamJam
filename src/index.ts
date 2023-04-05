@@ -6,13 +6,15 @@ import Bot from './bot';
 const BOT = new Bot(process.env.TOKEN as string);
 
 // Connects to the Mongo Database
-BOT.connectDB();
+// BOT.connectDB();
 // Registers all the events!
 BOT.registerEvents();
 // Registers all the commands!
 BOT.registerCommands();
+// Loads all the commands!
+BOT.loadCommands();
 // Connects to the Discord Client
 BOT.connectClient();
 
 // Exports
-export { CRUD, Discord };
+export { BOT, CRUD, Discord };
