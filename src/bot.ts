@@ -9,7 +9,11 @@ class Bot {
   public COMMAND_MAP = new Map();
   constructor(TOKEN: string) {
     this.CLIENT = new Discord.Client({
-      intents: [Discord.GatewayIntentBits.Guilds]
+      intents: [
+        Discord.GatewayIntentBits.Guilds,
+        Discord.GatewayIntentBits.MessageContent,
+        Discord.GatewayIntentBits.GuildMessages
+      ]
     });
     this._TOKEN = TOKEN;
   }
@@ -39,15 +43,6 @@ class Bot {
         );
       }
     }
-    // Const REST = new Discord.REST({ version: '10 ' }).setToken(
-    //   Process.env.TOKEN as string
-    // );
-    // Const DATA = await REST.put(
-    //   Discord.Routes.applicationGuildCommands(
-    //     (process.env.CLIENT_ID as string, process.env.GUILD_ID as string),
-    //     { body: this.COMMAND_MAP }
-    //   )
-    // );
   }
 
   public async loadCommands(): Promise<void> {
