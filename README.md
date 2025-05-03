@@ -46,4 +46,5 @@ JamJam functions as a basic user verification discord bot for JAMHacks. As of no
 ## Contributors
 
 JAMHacks 7 - [Ayush Garg](http://linkedin.com/in/lazeash/)
+
 JAMHacks 9 - [Jason Cameron](http://linkedin.com/in/jsoncameron/)
