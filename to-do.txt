@@ -2,3 +2,4 @@ Command Handling (Done)
 Event Handling (Done)
 Database
 Make Verify Command
+Refactor ids out to a config.ts

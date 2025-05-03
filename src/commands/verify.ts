@@ -1,5 +1,6 @@
 import { Discord } from '../index';
 import { USER } from '../database';
+
 export = {
   data: new Discord.SlashCommandBuilder()
     .setName('verify')
@@ -10,9 +11,9 @@ export = {
         async (doc) => {
           console.log(doc);
           if (doc?.attendingStatus === 1) {
-            interaction.reply(`Welcome to JAMHacks 7 ${doc.name}!`);
+            await interaction.reply(`Welcome to JAMHacks 9 ${doc.name}!`);
             const ROLE: Discord.Role = (await interaction.guild?.roles.fetch(
-              '1092918980156596224'
+              '1366214286036308050'
             )) as Discord.Role;
             const MEMBER: Discord.GuildMember =
               (await interaction.guild?.members.fetch(
@@ -22,15 +23,15 @@ export = {
             await MEMBER.setNickname(`${doc?.name}`);
             // Add role and change nickname to real name
           } else {
-            interaction.reply(
-              `Sorry, you are not confirmed to attend JAMHacks 7! Please contact someone with the Organizer role if you believe that this is a mistake!`
+            await interaction.reply(
+              `Sorry, you are not confirmed to attend JAMHacks 9! If you have been accepted, please RSVP first.\nPlease contact someone with the Organizer role if you believe that this is a mistake!`
             );
           }
         }
       );
     } else {
       await interaction.reply(
-        `Sorry, my database records does not show their ever being a record of <@${interaction.user.id}> registering for JAMHacks 7, contact someone with the Organizer role if you believe that this is a mistake`
+        `Sorry, my database records does not show their ever being a record of <@${interaction.user.id}> registering for JAMHacks 9, contact someone with the Organizer role if you believe that this is a mistake`
       );
     }
   }

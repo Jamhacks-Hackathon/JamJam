@@ -1,4 +1,5 @@
-# JamJam 
+# JamJam
+
 Verification Discord Bot for JAMHacks Hackathon hosted at the [University of Waterloo](http://uwaterloo.ca)
 
 [JAMHacks Website](https://www.jamhacks.ca)
@@ -23,9 +24,12 @@ Rename .example.env file to .env and insert your credentials
 
 yarn / npm dev # Run the Discord Bot
 ```
+
 If you would like to host the bot using the replit method that was used for JAMHacks 7 please refer to [Hosting a Discord bot on Repl.it](https://dev.to/fizal619/so-you-want-to-make-a-discord-bot-4f0n)
 
+- Update the random hardcoded channel id and role ids
 ## References
+
 [Naming Conventions](https://www.30secondsofcode.org/articles/s/javascript-naming-conventions)
 (In some places the naming conventions were not followed due to how jamhacks.ca was constructed)
 
@@ -42,4 +46,4 @@ JamJam functions as a basic user verification discord bot for JAMHacks. As of no
 ## Contributors
 
 JAMHacks 7 - [Ayush Garg](http://linkedin.com/in/lazeash/)
-
+JAMHacks 9 - [Jason Cameron](http://linkedin.com/in/jsoncameron/)

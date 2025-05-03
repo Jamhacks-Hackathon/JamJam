@@ -53,13 +53,15 @@ const userSchema = new Schema({
     type: Boolean,
     default: false
   },
-  event_specific: { // LIKE WHY IS THIS SNAKE CASE
+  event_specific: {
+    // LIKE WHY IS THIS SNAKE CASE
     wistem_brunch: {
       // 0: undecided, 1: confirmed, -1: dismissed
       type: Number,
       default: 0
     },
-    workshopAttendances: { // AND WHY IS THIS CAMEL CASE
+    workshopAttendances: {
+      // AND WHY IS THIS CAMEL CASE
       type: [{ type: mongoose.Types.ObjectId, ref: 'Events' }],
       default: []
     }

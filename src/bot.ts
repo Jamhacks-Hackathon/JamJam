@@ -5,7 +5,7 @@ import fs from 'fs';
 
 class Bot {
   public CLIENT: Discord.Client;
-  private _TOKEN: string;
+  private readonly _TOKEN: string;
   public COMMAND_MAP = new Map();
   constructor(TOKEN: string) {
     this.CLIENT = new Discord.Client({
