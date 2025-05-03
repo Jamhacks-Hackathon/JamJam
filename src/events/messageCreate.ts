@@ -13,7 +13,7 @@ export = {
     ];
 
     // Only proceed if the message mentions the bot
-    if (message.content.includes(`<@1348137410893971547>`)) {
+    if (message.content.includes(`<@${process.env.CLIENT_ID}>`)) {
       // Check if the channel is fully functional (has .send and .sendTyping)
       if ('send' in message.channel && 'sendTyping' in message.channel) {
         await message.channel.sendTyping();

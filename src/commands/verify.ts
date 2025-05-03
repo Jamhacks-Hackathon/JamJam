@@ -13,7 +13,7 @@ export = {
           if (doc?.attendingStatus === 1) {
             await interaction.reply(`Welcome to JAMHacks 9 ${doc.name}!`);
             const ROLE: Discord.Role = (await interaction.guild?.roles.fetch(
-              '1366214286036308050'
+              process.env.HACKER_ROLE_ID
             )) as Discord.Role;
             const MEMBER: Discord.GuildMember =
               (await interaction.guild?.members.fetch(
