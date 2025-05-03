@@ -30,7 +30,7 @@ class Bot {
     const COMMANDS_PATH = path.join(__dirname, './commands');
     const COMMAND_FILES = fs
       .readdirSync(COMMANDS_PATH)
-      .filter((file) => file.endsWith('.ts'));
+      .filter((file) => file.endsWith('.ts') || file.endsWith('.js'));
     for (const FILE of COMMAND_FILES) {
       const FILE_PATH = path.join(COMMANDS_PATH, FILE);
       const COMMAND = await import(FILE_PATH);
@@ -50,7 +50,7 @@ class Bot {
     const COMMANDS_PATH = path.join(__dirname, './commands');
     const COMMAND_FILES = fs
       .readdirSync(COMMANDS_PATH)
-      .filter((file) => file.endsWith('.ts'));
+      .filter((file) => file.endsWith('.ts') || file.endsWith('.js'));
     for (const FILE of COMMAND_FILES) {
       const COMMAND = await import(`./commands/${FILE}`);
       COMMANDS.push(COMMAND.data.toJSON());
@@ -79,7 +79,7 @@ class Bot {
     const EVENTS_PATH = path.join(__dirname, 'events');
     const EVENTS_FILE = fs
       .readdirSync(EVENTS_PATH)
-      .filter((file) => file.endsWith('.ts'));
+      .filter((file) => file.endsWith('.ts') || file.endsWith('.js'));
 
     for (const FILE of EVENTS_FILE) {
       const FILE_PATH = path.join(EVENTS_PATH, FILE);
