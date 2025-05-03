@@ -6,6 +6,10 @@ export = {
     .setName('verify')
     .setDescription('Verify command!'),
   async execute(interaction: Discord.CommandInteraction) {
+    if (process.env.HACKER_ROLE_ID === undefined) {
+      console.error('HACKER_ROLE_ID is not defined');
+      process.exit(1);
+    }
     if (await USER.exists({ discord_id: interaction.user.id })) {
       await USER.findOne({ discord_id: interaction.user.id }).then(
         async (doc) => {
@@ -13,7 +17,7 @@ export = {
           if (doc?.attendingStatus === 1) {
             await interaction.reply(`Welcome to JAMHacks 9 ${doc.name}!`);
             const ROLE: Discord.Role = (await interaction.guild?.roles.fetch(
-              process.env.HACKER_ROLE_ID
+              process.env.HACKER_ROLE_ID as string
             )) as Discord.Role;
             const MEMBER: Discord.GuildMember =
               (await interaction.guild?.members.fetch(
