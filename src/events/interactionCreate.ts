@@ -54,7 +54,6 @@ async function handleAnnounceModal(
     const message = interaction.fields.getTextInputValue('messageInput');
     const channelInput = interaction.fields.getTextInputValue('channelInput');
     const timeString = interaction.fields.getTextInputValue('timeInput');
-    const pingRoleInput = interaction.fields.getTextInputValue('pingInput');
 
     // Resolve channel from name or ID
     let channel;
@@ -67,8 +66,7 @@ async function handleAnnounceModal(
     } else if (!channelInput.match(/^\d+$/)) {
       // If it's not a raw ID, try to find by name
       channel = interaction.guild?.channels.cache.find(
-        (c) =>
-          c.name.toLowerCase() === channelInput.toLowerCase().replace('#', '')
+        c => c.name.toLowerCase() === channelInput.toLowerCase().replace('#', '')
       );
 
       if (channel) {
@@ -77,13 +75,10 @@ async function handleAnnounceModal(
     }
 
     // Validate the channel
-    channel =
-      channel ||
-      (await interaction.guild?.channels.fetch(channelId).catch(() => null));
+    channel = channel || await interaction.guild?.channels.fetch(channelId).catch(() => null);
     if (!channel || !channel.isTextBased()) {
       await interaction.reply({
-        content:
-          'Invalid channel. Please provide a valid text channel name or ID.',
+        content: 'Invalid channel. Please provide a valid text channel name or ID.',
         ephemeral: true
       });
       return;
@@ -101,10 +96,8 @@ async function handleAnnounceModal(
         throw new Error('Invalid format');
       }
 
-      const [year, month, day] = datePart
-        .split('-')
-        .map((num) => parseInt(num));
-      const [hour, minute] = timePart.split(':').map((num) => parseInt(num));
+      const [year, month, day] = datePart.split('-').map(num => parseInt(num));
+      const [hour, minute] = timePart.split(':').map(num => parseInt(num));
 
       // Create date (Month is 0-indexed in JavaScript Date)
       scheduledTime = new Date(year, month - 1, day, hour, minute);
@@ -115,8 +108,7 @@ async function handleAnnounceModal(
       }
     } catch (error) {
       await interaction.reply({
-        content:
-          'Invalid time format. Please use YYYY-MM-DD HH:MM format (e.g., 2025-05-17 15:34).',
+        content: 'Invalid time format. Please use YYYY-MM-DD HH:MM format (e.g., 2025-05-17 15:34).',
         ephemeral: true
       });
       return;
@@ -134,35 +126,11 @@ async function handleAnnounceModal(
       return;
     }
 
-    // Resolve role from name or ID
-    let pingRole = pingRoleInput.trim();
-    if (pingRole) {
-      // If it's a mention format like <@&123456789>
-      if (pingRole.startsWith('<@&') && pingRole.endsWith('>')) {
-        pingRole = pingRole.substring(3, pingRole.length - 1);
-      }
-      // If it's not a raw ID, try to find by name
-      else if (!pingRole.match(/^\d+$/)) {
-        const role = interaction.guild?.roles.cache.find(
-          (r) =>
-            r.name.toLowerCase() === pingRole.toLowerCase().replace('@', '')
-        );
-
-        if (role) {
-          pingRole = role.id;
-        } else {
-          // If no matching role, keep the original input
-          // This way the pingRole will show as text if not found
-        }
-      }
-    }
-
     // Create the announcement in the database
     const announcement = new ANNOUNCEMENT({
       scheduledTime,
       channelId: channel.id,
       message,
-      pingRole,
       createdBy: interaction.user.id,
       sent: false
     });
@@ -187,14 +155,11 @@ async function handleAnnounceModal(
     // Reply to the user with better feedback
     await interaction.reply({
       content: `✅ Announcement scheduled for ${scheduledTime.toLocaleString()} (in ${timeUntilText}) in <#${channel.id}>
-📝 Message: ${message.length > 50 ? message.substring(0, 47) + '...' : message}
-${pingRole ? `🔔 Will ping: <@&${pingRole}>` : ''}`,
+📝 Message: ${message.length > 50 ? message.substring(0, 47) + '...' : message}`,
       ephemeral: true
     });
 
-    console.log(
-      `Scheduled announcement created by ${interaction.user.tag} for ${scheduledTime.toISOString()}`
-    );
+    console.log(`Scheduled announcement created by ${interaction.user.tag} for ${scheduledTime.toISOString()}`);
   } catch (error) {
     console.error('Error handling announcement modal:', error);
     await interaction.reply({

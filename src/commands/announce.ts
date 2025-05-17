@@ -17,10 +17,10 @@ export = {
       .setCustomId('messageInput')
       .setLabel('Announcement Message')
       .setStyle(Discord.TextInputStyle.Paragraph)
-      .setPlaceholder('Enter your announcement message here')
+      .setPlaceholder('Enter your announcement message here (you can include pings like @role)')
       .setRequired(true);
 
-    // We still use text input for channel, but improve the instructions
+    // Channel input with improved instructions
     const channelInput = new Discord.TextInputBuilder()
       .setCustomId('channelInput')
       .setLabel('Channel')
@@ -35,14 +35,6 @@ export = {
       .setPlaceholder('e.g., 2025-05-17 15:34')
       .setRequired(true);
 
-    // We still use text input for role, but improve the instructions
-    const pingInput = new Discord.TextInputBuilder()
-      .setCustomId('pingInput')
-      .setLabel('Role to Ping (optional)')
-      .setStyle(Discord.TextInputStyle.Short)
-      .setPlaceholder('Enter role name or ID (e.g. @everyone or Community)')
-      .setRequired(false);
-
     // Add inputs to action rows
     const messageActionRow =
       new Discord.ActionRowBuilder<Discord.TextInputBuilder>().addComponents(
@@ -56,17 +48,12 @@ export = {
       new Discord.ActionRowBuilder<Discord.TextInputBuilder>().addComponents(
         timeInput
       );
-    const pingActionRow =
-      new Discord.ActionRowBuilder<Discord.TextInputBuilder>().addComponents(
-        pingInput
-      );
 
     // Add action rows to the modal
     modal.addComponents(
       messageActionRow,
       channelActionRow,
-      timeActionRow,
-      pingActionRow
+      timeActionRow
     );
 
     // Show the modal to the user

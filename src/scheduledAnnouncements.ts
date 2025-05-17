@@ -44,23 +44,12 @@ export async function checkScheduledAnnouncements(): Promise<void> {
           continue;
         }
 
-        // Prepare the message content
-        let messageContent = announcement.message;
-
-        // Add role ping if specified
-        if (announcement.pingRole && announcement.pingRole.trim() !== '') {
-          // Check if it's a valid role ID
-          if (announcement.pingRole.match(/^\d+$/)) {
-            messageContent = `<@&${announcement.pingRole}> ${messageContent}`;
-          } else {
-            // If it's not a valid ID, just include it as text
-            messageContent = `${announcement.pingRole} ${messageContent}`;
-          }
-        }
-
-        // Send the message
+        // Send the message with full ping support
         const textChannel = channel as Discord.TextChannel;
-        await textChannel.send(messageContent);
+        await textChannel.send({
+          content: announcement.message,
+          allowedMentions: { parse: ['roles', 'users', 'everyone'] }
+        });
 
         // Mark the announcement as sent
         announcement.sent = true;
