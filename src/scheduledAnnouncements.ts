@@ -9,8 +9,6 @@ export async function checkScheduledAnnouncements(): Promise<void> {
     // Find all unsent announcements whose scheduled time has passed
     const now = new Date();
 
-    console.log(`Checking for announcements at ${now.toLocaleString()}`);
-
     const pendingAnnouncements = await ANNOUNCEMENT.find({
       scheduledTime: { $lte: now },
       sent: false
