@@ -89,13 +89,13 @@ async function handleAnnounceModal(
       return;
     }
 
-    // Parse and validate the time with explicit EDT (GMT-4) timezone handling
+    // Parse and validate the time
     let scheduledTime;
     try {
       // Format the time string and parse it
       const formattedTimeString = timeString.trim();
 
-      // Create the date object manually with EDT timezone consideration
+      // Parse date components
       const [datePart, timePart] = formattedTimeString.split(' ');
       if (!datePart || !timePart) {
         throw new Error('Invalid format');
@@ -106,60 +106,29 @@ async function handleAnnounceModal(
         .map((num) => parseInt(num));
       const [hour, minute] = timePart.split(':').map((num) => parseInt(num));
 
-      // Create date in EDT time
-      // Month is 0-indexed in JavaScript Date
-      scheduledTime = new Date(
-        Date.UTC(year, month - 1, day, hour + 4, minute)
-      );
+      // Create date (Month is 0-indexed in JavaScript Date)
+      scheduledTime = new Date(year, month - 1, day, hour, minute);
 
       // Check if date is valid
       if (isNaN(scheduledTime.getTime())) {
         throw new Error('Invalid date format');
       }
-
-      // For debugging
-      console.log(
-        `Input time: ${formattedTimeString}, Parsed time (EDT): ${scheduledTime.toLocaleString(
-          'en-US',
-          { timeZone: 'America/New_York' }
-        )}`
-      );
     } catch (error) {
       await interaction.reply({
         content:
-          'Invalid time format. Please use YYYY-MM-DD HH:MM format (e.g., 2025-05-17 15:34) in EDT timezone.',
+          'Invalid time format. Please use YYYY-MM-DD HH:MM format (e.g., 2025-05-17 15:34).',
         ephemeral: true
       });
       return;
     }
 
-    // Get current time in EDT
+    // Get current time
     const now = new Date();
-    // Adjust for EDT (GMT-4)
-    const edtOffset = -4 * 60; // EDT offset in minutes
-    const nowEDT = new Date(
-      now.getTime() + (now.getTimezoneOffset() + edtOffset) * 60000
-    );
 
-    // Log times for debugging
-    console.log(
-      `Current time (EDT): ${nowEDT.toLocaleString('en-US', {
-        timeZone: 'America/New_York'
-      })}`
-    );
-    console.log(
-      `Scheduled time (EDT): ${scheduledTime.toLocaleString('en-US', {
-        timeZone: 'America/New_York'
-      })}`
-    );
-
-    // Ensure the time is in the future
-    if (scheduledTime.getTime() <= nowEDT.getTime()) {
+    // Ensure the time is in the future with a small 5-second buffer
+    if (scheduledTime.getTime() <= now.getTime() - 5000) {
       await interaction.reply({
-        content: `Scheduled time must be in the future. Current time in EDT is: ${nowEDT.toLocaleString(
-          'en-US',
-          { timeZone: 'America/New_York' }
-        )}`,
+        content: `Scheduled time must be in the future. Current time is: ${now.toLocaleString()}`,
         ephemeral: true
       });
       return;
@@ -200,8 +169,8 @@ async function handleAnnounceModal(
 
     await announcement.save();
 
-    // Calculate time until the announcement (using the adjusted times)
-    const timeUntil = scheduledTime.getTime() - nowEDT.getTime();
+    // Calculate time until the announcement
+    const timeUntil = scheduledTime.getTime() - now.getTime();
     const hours = Math.floor(timeUntil / (1000 * 60 * 60));
     const minutes = Math.floor((timeUntil % (1000 * 60 * 60)) / (1000 * 60));
 
@@ -211,30 +180,20 @@ async function handleAnnounceModal(
       timeUntilText += `${hours} hour${hours === 1 ? '' : 's'}`;
     }
     if (minutes > 0 || hours === 0) {
-      if (hours > 0) {
-        timeUntilText += ' and ';
-      }
+      if (hours > 0) timeUntilText += ' and ';
       timeUntilText += `${minutes} minute${minutes === 1 ? '' : 's'}`;
     }
 
-    // Reply to the user with better feedback, showing EDT time
+    // Reply to the user with better feedback
     await interaction.reply({
-      content: `✅ Announcement scheduled for ${scheduledTime.toLocaleString(
-        'en-US',
-        { timeZone: 'America/New_York' }
-      )} EDT (in ${timeUntilText}) in <#${channel.id}>
+      content: `✅ Announcement scheduled for ${scheduledTime.toLocaleString()} (in ${timeUntilText}) in <#${channel.id}>
 📝 Message: ${message.length > 50 ? message.substring(0, 47) + '...' : message}
 ${pingRole ? `🔔 Will ping: <@&${pingRole}>` : ''}`,
       ephemeral: true
     });
 
     console.log(
-      `Scheduled announcement created by ${
-        interaction.user.tag
-      } for ${scheduledTime.toISOString()} (EDT: ${scheduledTime.toLocaleString(
-        'en-US',
-        { timeZone: 'America/New_York' }
-      )})`
+      `Scheduled announcement created by ${interaction.user.tag} for ${scheduledTime.toISOString()}`
     );
   } catch (error) {
     console.error('Error handling announcement modal:', error);

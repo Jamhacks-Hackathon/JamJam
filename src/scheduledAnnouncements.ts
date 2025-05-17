@@ -7,20 +7,12 @@ import { ANNOUNCEMENT } from './database';
 export async function checkScheduledAnnouncements(): Promise<void> {
   try {
     // Find all unsent announcements whose scheduled time has passed
-    // Get current time in EDT
     const now = new Date();
-    // Adjust for EDT (GMT-4)
-    const edtOffset = -4 * 60; // EDT offset in minutes
-    const nowEDT = new Date(
-      now.getTime() + (now.getTimezoneOffset() + edtOffset) * 60000
-    );
 
-    console.log(
-      `Checking for announcements at ${nowEDT.toLocaleString('en-US', { timeZone: 'America/New_York' })} EDT`
-    );
+    console.log(`Checking for announcements at ${now.toLocaleString()}`);
 
     const pendingAnnouncements = await ANNOUNCEMENT.find({
-      scheduledTime: { $lte: nowEDT },
+      scheduledTime: { $lte: now },
       sent: false
     });
 
@@ -29,15 +21,15 @@ export async function checkScheduledAnnouncements(): Promise<void> {
     }
 
     console.log(
-      `Found ${pendingAnnouncements.length} pending announcements to send at ${nowEDT.toLocaleString('en-US', { timeZone: 'America/New_York' })} EDT`
+      `Found ${pendingAnnouncements.length} pending announcements to send at ${now.toLocaleString()}`
     );
 
     // Process each pending announcement
     for (const announcement of pendingAnnouncements) {
       try {
-        const scheduledTimeEDT = new Date(announcement.scheduledTime);
+        const scheduledTime = new Date(announcement.scheduledTime);
         console.log(
-          `Processing announcement: ${announcement._id}, scheduled for ${scheduledTimeEDT.toLocaleString('en-US', { timeZone: 'America/New_York' })} EDT`
+          `Processing announcement: ${announcement._id}, scheduled for ${scheduledTime.toLocaleString()}`
         );
 
         // Get the channel
@@ -75,7 +67,7 @@ export async function checkScheduledAnnouncements(): Promise<void> {
         await announcement.save();
 
         console.log(
-          `Successfully sent scheduled announcement ${announcement._id} at ${nowEDT.toLocaleString('en-US', { timeZone: 'America/New_York' })} EDT`
+          `Successfully sent scheduled announcement ${announcement._id} at ${now.toLocaleString()}`
         );
       } catch (error) {
         console.error(`Error sending announcement ${announcement._id}:`, error);
@@ -92,7 +84,7 @@ export async function checkScheduledAnnouncements(): Promise<void> {
  */
 export function startScheduledAnnouncementChecker(): NodeJS.Timeout {
   console.log(
-    `Starting scheduled announcement checker at ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })} EDT`
+    `Starting scheduled announcement checker at ${new Date().toLocaleString()}`
   );
 
   // Check immediately on startup
