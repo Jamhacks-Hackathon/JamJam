@@ -112,6 +112,6 @@ export function startScheduledAnnouncementChecker(): NodeJS.Timeout {
   // Check immediately on startup
   void checkScheduledAnnouncements();
 
-  // Then check every minute
-  return setInterval(checkScheduledAnnouncements, 60000);
+  // Then check 10s
+  return setInterval(checkScheduledAnnouncements, 10000);
 }
