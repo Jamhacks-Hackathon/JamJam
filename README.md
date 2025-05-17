@@ -28,6 +28,7 @@ yarn / npm dev # Run the Discord Bot
 If you would like to host the bot using the replit method that was used for JAMHacks 7 please refer to [Hosting a Discord bot on Repl.it](https://dev.to/fizal619/so-you-want-to-make-a-discord-bot-4f0n)
 
 - Update the random hardcoded channel id and role ids
+
 ## References
 
 [Naming Conventions](https://www.30secondsofcode.org/articles/s/javascript-naming-conventions)
