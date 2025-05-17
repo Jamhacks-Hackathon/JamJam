@@ -117,7 +117,9 @@ async function handleAnnounceModal(
     // Ensure the time is in the future
     if (scheduledTime <= new Date()) {
       await interaction.reply({
-        content: 'Scheduled time must be in the future.',
+        content:
+          "Scheduled time must be in the future. It's currently: ." +
+          new Date().toLocaleString(),
         ephemeral: true
       });
       return;

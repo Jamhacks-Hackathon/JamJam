@@ -1,5 +1,5 @@
 {
-  "name": "jamhacks7-discord-bot",
+  "name": "jamhacks-discord-bot",
   "version": "1.0.0",
   "description": "Discord Bot for JAMHacks 7-9",
   "main": "src/index.ts",
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Jamhacks-Hackathon/DiscordBot.git"
+    "url": "git+https://github.com/Jamhacks-Hackathon/JamJam.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Jamhacks-Hackathon/DiscordBot/issues"
+    "url": "https://github.com/Jamhacks-Hackathon/JamJam/issues"
   },
-  "homepage": "https://github.com/Jamhacks-Hackathon/DiscordBot#readme",
+  "homepage": "https://github.com/Jamhacks-Hackathon/JamJam#readme",
   "dependencies": {
     "@types/node": "^18.19.87",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
