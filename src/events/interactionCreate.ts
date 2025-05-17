@@ -89,22 +89,35 @@ async function handleAnnounceModal(
       return;
     }
 
-    // Parse and validate the time with better error handling
+    // Parse and validate the time with proper timezone handling
     let scheduledTime;
     try {
-      // Add seconds if not provided to ensure consistent format
-      const formattedTimeString = timeString
-        .trim()
-        .match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/)
-        ? `${timeString.trim()}:00`
-        : timeString.trim();
+      // Format the time string and add timezone info
+      const formattedTimeString = timeString.trim();
 
-      scheduledTime = new Date(formattedTimeString);
+      // Create the date object - this will interpret the date in local timezone
+      const [datePart, timePart] = formattedTimeString.split(' ');
+      if (!datePart || !timePart) {
+        throw new Error('Invalid format');
+      }
+
+      const [year, month, day] = datePart
+        .split('-')
+        .map((num) => parseInt(num));
+      const [hour, minute] = timePart.split(':').map((num) => parseInt(num));
+
+      // Month is 0-indexed in JavaScript Date
+      scheduledTime = new Date(year, month - 1, day, hour, minute);
 
       // Check if date is valid
       if (isNaN(scheduledTime.getTime())) {
         throw new Error('Invalid date format');
       }
+
+      // For debugging - show both dates in console
+      console.log(
+        `Input time: ${formattedTimeString}, Parsed time: ${scheduledTime.toLocaleString()}, Current time: ${new Date().toLocaleString()}`
+      );
     } catch (error) {
       await interaction.reply({
         content:
@@ -114,12 +127,21 @@ async function handleAnnounceModal(
       return;
     }
 
-    // Ensure the time is in the future
-    if (scheduledTime <= new Date()) {
+    // Get current time
+    const now = new Date();
+
+    // Log times for debugging
+    console.log(
+      `Now: ${now.toISOString()}, Scheduled: ${scheduledTime.toISOString()}`
+    );
+    console.log(
+      `Current time milliseconds: ${now.getTime()}, Scheduled time milliseconds: ${scheduledTime.getTime()}`
+    );
+
+    // Ensure the time is in the future (with 10 seconds grace period for processing)
+    if (scheduledTime.getTime() <= now.getTime() - 10000) {
       await interaction.reply({
-        content:
-          "Scheduled time must be in the future. It's currently: ." +
-          new Date().toLocaleString(),
+        content: `Scheduled time must be in the future. It's currently: ${now.toLocaleString()}`,
         ephemeral: true
       });
       return;
@@ -161,7 +183,6 @@ async function handleAnnounceModal(
     await announcement.save();
 
     // Calculate time until the announcement
-    const now = new Date();
     const timeUntil = scheduledTime.getTime() - now.getTime();
     const hours = Math.floor(timeUntil / (1000 * 60 * 60));
     const minutes = Math.floor((timeUntil % (1000 * 60 * 60)) / (1000 * 60));
@@ -189,7 +210,9 @@ ${pingRole ? `🔔 Will ping: <@&${pingRole}>` : ''}`,
     });
 
     console.log(
-      `Scheduled announcement created by ${interaction.user.tag} for ${scheduledTime.toISOString()}`
+      `Scheduled announcement created by ${
+        interaction.user.tag
+      } for ${scheduledTime.toISOString()}`
     );
   } catch (error) {
     console.error('Error handling announcement modal:', error);
