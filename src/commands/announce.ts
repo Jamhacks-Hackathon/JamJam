@@ -17,7 +17,9 @@ export = {
       .setCustomId('messageInput')
       .setLabel('Announcement Message')
       .setStyle(Discord.TextInputStyle.Paragraph)
-      .setPlaceholder('Enter your announcement message here (you can include pings like @role)')
+      .setPlaceholder(
+        'Enter your announcement message here (you can include pings like @role)'
+      )
       .setRequired(true);
 
     // Channel input with improved instructions
@@ -50,11 +52,7 @@ export = {
       );
 
     // Add action rows to the modal
-    modal.addComponents(
-      messageActionRow,
-      channelActionRow,
-      timeActionRow
-    );
+    modal.addComponents(messageActionRow, channelActionRow, timeActionRow);
 
     // Show the modal to the user
     await interaction.showModal(modal);

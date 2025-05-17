@@ -21,7 +21,9 @@ export async function checkScheduledAnnouncements(): Promise<void> {
     }
 
     console.log(
-      `Found ${pendingAnnouncements.length} pending announcements to send at ${now.toLocaleString()}`
+      `Found ${
+        pendingAnnouncements.length
+      } pending announcements to send at ${now.toLocaleString()}`
     );
 
     // Process each pending announcement
@@ -29,7 +31,9 @@ export async function checkScheduledAnnouncements(): Promise<void> {
       try {
         const scheduledTime = new Date(announcement.scheduledTime);
         console.log(
-          `Processing announcement: ${announcement._id}, scheduled for ${scheduledTime.toLocaleString()}`
+          `Processing announcement: ${
+            announcement._id
+          }, scheduled for ${scheduledTime.toLocaleString()}`
         );
 
         // Get the channel
@@ -44,10 +48,25 @@ export async function checkScheduledAnnouncements(): Promise<void> {
           continue;
         }
 
+        // Resolve mentions in the message content
+        let messageContent = announcement.message;
+        const userMentions = messageContent.match(/@\w+/g); // Match potential mentions
+        if (userMentions) {
+          for (const mention of userMentions) {
+            const username = mention.slice(1); // Remove the '@'
+            const user = BOT.CLIENT.users.cache.find(
+              (u) => u.username === username
+            );
+            if (user) {
+              messageContent = messageContent.replace(mention, `<@${user.id}>`);
+            }
+          }
+        }
+
         // Send the message with full ping support
         const textChannel = channel as Discord.TextChannel;
         await textChannel.send({
-          content: announcement.message,
+          content: messageContent,
           allowedMentions: { parse: ['roles', 'users', 'everyone'] }
         });
 
@@ -56,7 +75,9 @@ export async function checkScheduledAnnouncements(): Promise<void> {
         await announcement.save();
 
         console.log(
-          `Successfully sent scheduled announcement ${announcement._id} at ${now.toLocaleString()}`
+          `Successfully sent scheduled announcement ${
+            announcement._id
+          } at ${now.toLocaleString()}`
         );
       } catch (error) {
         console.error(`Error sending announcement ${announcement._id}:`, error);
