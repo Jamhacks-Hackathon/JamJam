@@ -49,79 +49,13 @@ export async function checkScheduledAnnouncements(): Promise<void> {
         }
 
         const textChannel = channel as Discord.TextChannel;
-        const guild = textChannel.guild;
 
-        // Process message to handle any manual mention formats
-        let messageContent = announcement.message;
-
-        // Try to resolve any manual mentions of users or roles that might not work automatically
-        try {
-          // Fetch all guild members for better mention resolution (if the guild isn't too large)
-          if (guild && guild.memberCount < 1000) {
-            await guild.members.fetch();
-          }
-
-          // 1. Handle user mentions in @username format
-          const userMentions = messageContent.match(/@(\w+)/g);
-          if (userMentions) {
-            for (const mention of userMentions) {
-              const username = mention.slice(1); // Remove the '@'
-
-              // Try to find the user in guild members
-              const member = guild.members.cache.find(
-                (m) =>
-                  m.user.username.toLowerCase() === username.toLowerCase() ||
-                  m.displayName.toLowerCase() === username.toLowerCase() ||
-                  m.nickname?.toLowerCase() === username.toLowerCase()
-              );
-
-              if (member) {
-                // Replace the text mention with a proper Discord mention
-                messageContent = messageContent.replace(
-                  new RegExp(`@${username}\\b`, 'g'),
-                  `<@${member.id}>`
-                );
-              }
-            }
-          }
-
-          // 2. Handle role mentions in @rolename format
-          const roleMentions = messageContent.match(/@(\w+)/g); // We reuse the same regex
-          if (roleMentions) {
-            for (const mention of roleMentions) {
-              const roleName = mention.slice(1); // Remove the '@'
-
-              // Try to find the role by name
-              const role = guild.roles.cache.find(
-                (r) => r.name.toLowerCase() === roleName.toLowerCase()
-              );
-
-              if (role) {
-                // Replace the text mention with a proper Discord role mention
-                messageContent = messageContent.replace(
-                  new RegExp(`@${roleName}\\b`, 'g'),
-                  `<@&${role.id}>`
-                );
-              }
-            }
-          }
-
-          // 3. Handle everyone/here mentions
-          messageContent = messageContent
-            .replace(/@everyone\b/g, '@everyone')
-            .replace(/@here\b/g, '@here');
-
-          console.log(`Processed message content: ${messageContent}`);
-        } catch (error) {
-          console.warn('Error processing mentions:', error);
-          // Continue with original message if there's an error
-        }
-
-        // Send the message with full ping support
+        // Simply send the message with all mentions enabled
+        // Discord.js will handle the proper mention formatting
         await textChannel.send({
-          content: messageContent,
+          content: announcement.message,
           allowedMentions: {
-            parse: ['roles', 'users', 'everyone']
+            parse: ['users', 'roles', 'everyone']
           }
         });
 
@@ -136,6 +70,29 @@ export async function checkScheduledAnnouncements(): Promise<void> {
         );
       } catch (error) {
         console.error(`Error sending announcement ${announcement._id}:`, error);
+
+        try {
+          // If sending fails, try again with a simpler approach without complex mention handling
+          const channel = await BOT.CLIENT.channels.fetch(
+            announcement.channelId
+          );
+          if (channel && channel.isTextBased()) {
+            const textChannel = channel as Discord.TextChannel;
+            await textChannel.send(announcement.message);
+
+            // Mark as sent if the fallback succeeds
+            announcement.sent = true;
+            await announcement.save();
+            console.log(
+              `Sent announcement ${announcement._id} using fallback method`
+            );
+          }
+        } catch (fallbackError) {
+          console.error(
+            `Fallback also failed for announcement ${announcement._id}:`,
+            fallbackError
+          );
+        }
       }
     }
   } catch (error) {
@@ -153,7 +110,7 @@ export function startScheduledAnnouncementChecker(): NodeJS.Timeout {
   );
 
   // Check immediately on startup
-  checkScheduledAnnouncements();
+  void checkScheduledAnnouncements();
 
   // Then check every minute
   return setInterval(checkScheduledAnnouncements, 60000);
