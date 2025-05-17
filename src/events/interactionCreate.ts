@@ -170,13 +170,17 @@ async function handleAnnounceModal(
       timeUntilText += `${hours} hour${hours === 1 ? '' : 's'}`;
     }
     if (minutes > 0 || hours === 0) {
-      if (hours > 0) timeUntilText += ' and ';
+      if (hours > 0) {
+        timeUntilText += ' and ';
+      }
       timeUntilText += `${minutes} minute${minutes === 1 ? '' : 's'}`;
     }
 
     // Reply to the user with better feedback
     await interaction.reply({
-      content: `✅ Announcement scheduled for ${scheduledTime.toLocaleString()} (in ${timeUntilText}) in <#${channel.id}>
+      content: `✅ Announcement scheduled for ${scheduledTime.toLocaleString()} (in ${timeUntilText}) in <#${
+        channel.id
+      }>
 📝 Message: ${message.length > 50 ? message.substring(0, 47) + '...' : message}
 ${pingRole ? `🔔 Will ping: <@&${pingRole}>` : ''}`,
       ephemeral: true

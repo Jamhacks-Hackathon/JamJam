@@ -18,7 +18,9 @@ export async function checkScheduledAnnouncements(): Promise<void> {
     }
 
     console.log(
-      `Found ${pendingAnnouncements.length} pending announcements to send at ${now.toISOString()}`
+      `Found ${
+        pendingAnnouncements.length
+      } pending announcements to send at ${now.toISOString()}`
     );
 
     // Process each pending announcement
