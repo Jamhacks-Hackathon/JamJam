@@ -18,16 +18,25 @@ export async function checkScheduledAnnouncements(): Promise<void> {
     }
 
     console.log(
-      `Found ${pendingAnnouncements.length} pending announcements to send`
+      `Found ${pendingAnnouncements.length} pending announcements to send at ${now.toISOString()}`
     );
 
     // Process each pending announcement
     for (const announcement of pendingAnnouncements) {
       try {
+        console.log(
+          `Processing announcement: ${announcement._id}, scheduled for ${announcement.scheduledTime}`
+        );
+
         // Get the channel
         const channel = await BOT.CLIENT.channels.fetch(announcement.channelId);
         if (!channel || !channel.isTextBased()) {
-          console.error(`Invalid channel for announcement ${announcement._id}`);
+          console.error(
+            `Invalid channel for announcement ${announcement._id}: ${announcement.channelId}`
+          );
+          // Mark as sent to avoid continuous errors
+          announcement.sent = true;
+          await announcement.save();
           continue;
         }
 
@@ -36,17 +45,26 @@ export async function checkScheduledAnnouncements(): Promise<void> {
 
         // Add role ping if specified
         if (announcement.pingRole && announcement.pingRole.trim() !== '') {
-          messageContent = `<@&${announcement.pingRole}> ${messageContent}`;
+          // Check if it's a valid role ID
+          if (announcement.pingRole.match(/^\d+$/)) {
+            messageContent = `<@&${announcement.pingRole}> ${messageContent}`;
+          } else {
+            // If it's not a valid ID, just include it as text
+            messageContent = `${announcement.pingRole} ${messageContent}`;
+          }
         }
 
         // Send the message
-        await (channel as Discord.TextChannel).send(messageContent);
+        const textChannel = channel as Discord.TextChannel;
+        await textChannel.send(messageContent);
 
         // Mark the announcement as sent
         announcement.sent = true;
         await announcement.save();
 
-        console.log(`Sent scheduled announcement ${announcement._id}`);
+        console.log(
+          `Successfully sent scheduled announcement ${announcement._id} at ${new Date().toISOString()}`
+        );
       } catch (error) {
         console.error(`Error sending announcement ${announcement._id}:`, error);
       }
@@ -61,7 +79,10 @@ export async function checkScheduledAnnouncements(): Promise<void> {
  * Runs every minute to check for announcements that need to be sent
  */
 export function startScheduledAnnouncementChecker(): NodeJS.Timeout {
-  console.log('Starting scheduled announcement checker');
+  console.log(
+    `Starting scheduled announcement checker at ${new Date().toISOString()}`
+  );
+
   // Check immediately on startup
   checkScheduledAnnouncements();
 

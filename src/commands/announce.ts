@@ -20,25 +20,27 @@ export = {
       .setPlaceholder('Enter your announcement message here')
       .setRequired(true);
 
+    // We still use text input for channel, but improve the instructions
     const channelInput = new Discord.TextInputBuilder()
       .setCustomId('channelInput')
-      .setLabel('Channel ID')
+      .setLabel('Channel')
       .setStyle(Discord.TextInputStyle.Short)
-      .setPlaceholder('Enter the channel ID for the announcement')
+      .setPlaceholder('Enter channel name or ID (e.g. #announcements)')
       .setRequired(true);
 
     const timeInput = new Discord.TextInputBuilder()
       .setCustomId('timeInput')
       .setLabel('Time (YYYY-MM-DD HH:MM)')
       .setStyle(Discord.TextInputStyle.Short)
-      .setPlaceholder('e.g., 2023-12-31 23:59')
+      .setPlaceholder('e.g., 2025-05-17 15:34')
       .setRequired(true);
 
+    // We still use text input for role, but improve the instructions
     const pingInput = new Discord.TextInputBuilder()
       .setCustomId('pingInput')
-      .setLabel('Role ID to Ping (optional)')
+      .setLabel('Role to Ping (optional)')
       .setStyle(Discord.TextInputStyle.Short)
-      .setPlaceholder('Leave empty for no ping')
+      .setPlaceholder('Enter role name or ID (e.g. @everyone or Community)')
       .setRequired(false);
 
     // Add inputs to action rows
