@@ -7,7 +7,7 @@ export = {
     .setDefaultMemberPermissions(Discord.PermissionFlagsBits.ManageMessages),
 
   async execute(interaction: Discord.CommandInteraction) {
-    // Create a modal for scheduling an announcement test commit
+    // Create a modal for scheduling an announcement
     const modal = new Discord.ModalBuilder()
       .setCustomId('announceModal')
       .setTitle('Schedule Announcement');
