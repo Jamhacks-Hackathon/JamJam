@@ -6,7 +6,7 @@ export = {
   async execute(message: Message) {
     const ARRAY = [
       'Feeling JAMtacular :jam:',
-      'JAMHacks 9 is the coolest hackathon!',
+      'JAMHacks 10 is the coolest hackathon!',
       'Ayush is coolest :sunglasses:, as long as you push him into a pool!',
       'JamJam jammin to music',
       'Strawberry Jam better'
