@@ -62,7 +62,9 @@ class Bot {
     try {
       /* eslint-disable */
       const DATA: any = await REST.put(
-        Discord.Routes.applicationCommands(process.env.CLIENT_ID as string),
+
+        // Currently deving, change this back to applicationCommands when the time comes
+        Discord.Routes.applicationGuildCommands(process.env.CLIENT_ID as string, process.env.GUILD_ID as string),
         { body: COMMANDS }
       );
       console.log(
