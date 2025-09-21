@@ -1,4 +1,5 @@
 import { Discord } from "../index";
+import path from "path";
 /*
 Command that allows JAMHacks hackers to find out where important venues are.
 E.g:
@@ -6,6 +7,19 @@ E.g:
 --> Located in the Ideas Hub! (Room 1427)
 --> (Insert Photo of where Room 1427 is)
 */
+
+const locationReplies: Record<string, string> = {
+  "openingCeremony": "The Opening Ceremony is located in Room 3101 - 3102 in E5.",
+  "judgingRooms": "The Judging Rooms are located in Rooms 2454 - 2466 in E7.",
+  "organizerRoom": "The organizer room is located in Room 2357 in E7."
+};
+
+const imagePaths: Record<string, string> = {
+  "openingCeremony": path.join(__dirname, "../assets/openingceremony.png"),
+  "judgingRooms": path.join(__dirname, "../assets/judgingrooms.png"),
+  "organizerRoom": path.join(__dirname, "../assets/organizerroom.png")
+};
+
 
 export = {
   data: new Discord.SlashCommandBuilder()
@@ -23,23 +37,26 @@ export = {
   
     async execute(interaction: Discord.ChatInputCommandInteraction) {
       const locationValue = interaction.options.getString("location", true);
-      let reply: string;
 
-      switch (locationValue) {
-        case "openingCeremony" :
-          reply = "The Opening Ceremony is located in Room 1427 in E7.";
-          break;
-        case "judgingRooms" :
-          reply = "The Judging Rooms are located in Rooms 2454 - 2466.";
-          break;
-        case "organizerRoom":
-          reply = "The organizer room is located in Room 2357.";
-          break;
-        default:
-          reply = "Sorry, JamJam doesn't recognize that room. Let one of the organizers know if you require assistance!";
+      let reply: string;
+      let image: Discord.AttachmentBuilder;
+
+      if (locationReplies[ locationValue ] === null) {
+        reply = "Sorry, JamJam doesn't recognize that room.";
+      } else {
+        reply = locationReplies[ locationValue ];
       }
 
-      await interaction.reply(reply);
+      if (imagePaths[ locationValue ] === null) {
+        image = new Discord.AttachmentBuilder( imagePaths[ locationValue ] );
+      } else {
+        image = new Discord.AttachmentBuilder( imagePaths[ locationValue ] );
+      }
+
+      await interaction.reply({
+        content: reply, 
+        files: [image]
+      });
 
     },
 

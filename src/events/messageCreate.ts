@@ -5,6 +5,7 @@ export = {
   name: Discord.Events.MessageCreate,
   async execute(message: Message) {
     const ARRAY = [
+
       'Feeling JAMtacular :jam:',
       'JAMHacks 10 is the coolest hackathon!',
       'Ayush is coolest :sunglasses:, as long as you push him into a pool!',
@@ -18,7 +19,7 @@ export = {
       if ('send' in message.channel && 'sendTyping' in message.channel) {
         await message.channel.sendTyping();
 
-        const NUM: number = Math.floor(Math.random() * (5 - 2)) + 1;
+        const NUM: number = Math.floor(Math.random() * 4);
         await message.channel.send(ARRAY[NUM]);
       }
     }
