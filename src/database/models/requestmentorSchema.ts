@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose';
-import mongoose from 'mongoose';
 
 const requestMentorSchema = new Schema({
   Guild: String,

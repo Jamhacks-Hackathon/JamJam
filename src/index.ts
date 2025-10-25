@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config(); // Load all the environment variables
-import Discord from 'discord.js';
+import Discord, { Client } from 'discord.js';
 import { CRUD } from './database';
 import Bot from './bot';
 import { startScheduledAnnouncementChecker } from './scheduledAnnouncements';
@@ -23,6 +23,7 @@ BOT.CLIENT.once('ready', () => {
   startScheduledAnnouncementChecker();
   console.log('Scheduled announcement checker started');
 });
+
 
 // Exports
 export { BOT, CRUD, Discord };

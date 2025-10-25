@@ -1,13 +1,38 @@
+import { ButtonBuilder, ButtonStyle, PermissionFlagsBits } from 'discord.js';
 import { BOT, Discord, CRUD } from '..';
-import { ANNOUNCEMENT } from '../database';
+import { ANNOUNCEMENT, REQUESTMENTOR } from '../database';
+import { requestMentorTicketModal } from './requestmentorticketModal';
 
 export = {
   name: Discord.Events.InteractionCreate,
   async execute(interaction: Discord.Interaction) {
+
+    // Handle Select Menu Interactions
+    if (interaction.isStringSelectMenu()) {
+      if (interaction.customId === 'requestMentorSelectMenu') {
+        const result = interaction.values.join('');
+        const filter = {Guild: interaction.guild!.id};
+        const update = {Ticket: result};
+
+        REQUESTMENTOR.updateOne(filter, update, {
+          new: true
+        }).then(value => {
+          console.log(value);
+        })
+
+        interaction.showModal(requestMentorTicketModal);
+      }
+      return;
+    }
+    
     // Handle modal submissions
     if (interaction.isModalSubmit()) {
       if (interaction.customId === 'announceModal') {
         await handleAnnounceModal(interaction);
+      }
+
+      if (interaction.customId === 'requestMentorTicketModal') {
+        await handleRequestMentorTicketModal(interaction);
       }
       return;
     }
@@ -180,4 +205,104 @@ async function handleAnnounceModal(
       ephemeral: true
     });
   }
+}
+
+/**
+ * Handle the request ticket modal submission
+ */
+
+async function handleRequestMentorTicketModal(interaction: Discord.ModalSubmitInteraction) {
+  if (!interaction.guild) {
+        await interaction.reply("This command can only be used in the JAMHacks Discord Server!");
+        return;
+      }
+
+  const data = await REQUESTMENTOR.findOne({ Guild: interaction.guild.id });
+  const information = interaction.fields.getTextInputValue('informationInput');
+
+  const posChannel = await interaction.guild?.channels.cache.find(c => c.name === `ticket-${interaction.user.id}`);
+  if (posChannel) {
+    return await interaction.reply({
+      content: 'You already have requested a mentor',
+      ephemeral: true
+    })
+  }
+
+  const category = data?.Channel;
+  const embed = new Discord.EmbedBuilder()
+    .setColor("Blue")
+    .setTitle(`${interaction.user.username}'s Mentor Request Ticket`)
+    .setDescription('Welcome to your Mentor Request Ticket! Please wait while our mentors review your information.')
+    .addFields({ name: "Additional Information", value: `${information} `})
+    .addFields({ name: "Type", value: `${data!.Ticket} `})
+    .setFooter({ text: `${interaction.guild.name} Mentor Request Tickets`})
+  
+  const button = new Discord.ActionRowBuilder<ButtonBuilder>()
+    .addComponents(
+      new Discord.ButtonBuilder()
+        .setCustomId('requestmentorticket')
+        .setLabel('Close Mentor Request Ticket')
+        .setStyle(ButtonStyle.Danger)
+    )
+  
+  const channel = await interaction.guild.channels.create({
+    name: `ticket-${interaction.user.id}`,
+    type: Discord.ChannelType.GuildText,
+    parent: `${category}`,
+    permissionOverwrites: [
+      {
+        id: interaction.guild.id,
+        deny: [PermissionFlagsBits.ViewChannel]
+      },
+      {
+        id: interaction.user.id,
+        allow: [
+          PermissionFlagsBits.ViewChannel,
+          PermissionFlagsBits.SendMessages,
+          PermissionFlagsBits.ReadMessageHistory,
+        ],
+      },
+      {
+        id: process.env.MENTOR_ROLE_ID as string,
+        allow: [
+          PermissionFlagsBits.ViewChannel,
+          PermissionFlagsBits.SendMessages,
+          PermissionFlagsBits.ReadMessageHistory,
+        ],
+      }
+    ]
+  })
+
+  const message = await channel.send({
+    embeds: [embed],
+    components: [button]
+  })
+
+  await interaction.reply({
+    content: `Your ticket is now open in ${channel}`,
+    ephemeral: true
+  })
+
+  const collector = message.createMessageComponentCollector()
+  collector.on('collect', async i => {
+    ;(await channel).delete();
+    const dmEmbed = new Discord.EmbedBuilder()
+      .setColor("Blue")
+      .setTitle(`Your Mentor Request Ticket has been closed.`)
+      .setDescription('Thanks for using the Mentor Request Ticket system. If you need anymore help, feel free to create another ticket!')
+      .setFooter({ text: `${interaction.guild!.name} Mentor Request Tickets`})
+      .setTimestamp()
+    
+      const member = await interaction.guild!.members.fetch(interaction.user.id);
+      member.send({
+        embeds: [dmEmbed]
+      }).catch(err => {
+        console.log(err);
+        return;
+      })
+
+  })
+
+  
+
 }
