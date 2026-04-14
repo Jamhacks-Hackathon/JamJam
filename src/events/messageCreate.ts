@@ -14,7 +14,7 @@ export = {
       'i know what you did.',
       "i hope you enjoy all of jamjam's inner monologues",
       'jamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjamjam',
-      'Are you in a Jam? You came to the right guy!',
+      'Are you in a Jam? You came to the right bot!',
       'i am jamjam, the cutest kitty made from grape jam',
       "snoozin' away in my pa**jam**as",
       'jamjams least favourite jam is a traffic jam :[',

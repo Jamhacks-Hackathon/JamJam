@@ -64,7 +64,7 @@ class Bot {
       const DATA: any = await REST.put(
 
         // Currently deving, change this back to applicationCommands when the time comes
-        Discord.Routes.applicationGuildCommands(process.env.CLIENT_ID as string, process.env.GUILD_ID as string),
+        Discord.Routes.applicationCommands(process.env.CLIENT_ID as string),
         { body: COMMANDS }
       );
       console.log(

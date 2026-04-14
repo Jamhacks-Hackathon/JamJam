@@ -15,7 +15,7 @@ export = {
         async (doc) => {
           console.log(doc);
           if (doc?.attendingStatus === 1) {
-            await interaction.reply(`Welcome to JAMHacks 9 ${doc.name}!`);
+            await interaction.reply(`Welcome to JAMHacks 10 ${doc.name}!`);
             const ROLE: Discord.Role = (await interaction.guild?.roles.fetch(
               process.env.HACKER_ROLE_ID as string
             )) as Discord.Role;
@@ -28,14 +28,14 @@ export = {
             // Add role and change nickname to real name
           } else {
             await interaction.reply(
-              `Sorry, you are not confirmed to attend JAMHacks 9! If you have been accepted, please RSVP first.\nPlease contact someone with the Organizer role if you believe that this is a mistake!`
+              `Sorry, you are not confirmed to attend JAMHacks 10! If you have been accepted, please RSVP first.\nPlease contact someone with the Organizer role if you believe that this is a mistake!`
             );
           }
         }
       );
     } else {
       await interaction.reply(
-        `Sorry, my database records does not show their ever being a record of <@${interaction.user.id}> registering for JAMHacks 9, contact someone with the Organizer role if you believe that this is a mistake`
+        `Sorry, my database records does not show their ever being a record of <@${interaction.user.id}> registering for 10, contact someone with the Organizer role if you believe that this is a mistake`
       );
     }
   }
