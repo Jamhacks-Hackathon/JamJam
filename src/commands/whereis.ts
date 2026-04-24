@@ -9,7 +9,7 @@ E.g:
 */
 
 const locationReplies: Record<string, string> = {
-  "openingCeremony": "The Opening Ceremony is located in Room 3101 - 3102 in E5.",
+  "openingCeremony": "The Opening Ceremony is located in the IDEAS Clinic in E7.",
   "judgingRooms": "The Judging Rooms are located in Rooms 2454 - 2466 in E7.",
   "organizerRoom": "The organizer room is located in Room 2357 in E7."
 };
