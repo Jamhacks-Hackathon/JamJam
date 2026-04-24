@@ -8,7 +8,6 @@ export = {
 
       'Feeling JAMtacular <:JAM:1417676985274077295>',
       'JAMHacks 10 is the coolest hackathon!',
-      'Ayush is coolest :sunglasses:, as long as you push him into a pool!',
       'JamJam jammin to music',
       'Strawberry Jam better',
       'i know what you did.',

@@ -1,7 +1,7 @@
 {
   "name": "jamhacks-discord-bot",
   "version": "1.0.0",
-  "description": "Discord Bot for JAMHacks 7-9",
+  "description": "Discord Bot for JAMHacks 7-10",
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/Jamhacks-Hackathon/JamJam#readme",
   "dependencies": {
+    "@google/genai": "^1.50.1",
     "@types/node": "^18.19.87",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
@@ -29,9 +30,10 @@
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "express": "^5.2.1",
     "fs": "0.0.1-security",
     "mongoose": "^6.13.8",
-    "nodemon": "^2.0.22",
+    "nodemon": "^3.1.14",
     "path": "^0.12.7",
     "prettier": "^2.8.8",
     "ts-node": "^10.9.2",
