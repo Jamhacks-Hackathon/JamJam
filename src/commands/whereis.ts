@@ -20,7 +20,6 @@ const imagePaths: Record<string, string> = {
   "organizerRoom": path.join(__dirname, "../assets/organizerroom.png")
 };
 
-
 export = {
   data: new Discord.SlashCommandBuilder()
     .setName('whereis')
