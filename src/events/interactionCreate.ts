@@ -50,13 +50,6 @@ export = {
     }
 
     try {
-      await interaction.deferReply();
-    } catch (error) {
-      console.error('Failed to defer interaction reply:', error);
-      return;
-    }
-
-    try {
       await COMMAND.execute(interaction);
     } catch (error) {
       console.error(error);
@@ -66,7 +59,10 @@ export = {
           ephemeral: true
         });
       } else {
-        console.error('Unable to send error reply: interaction was not acknowledged.');
+        await interaction.reply({
+          content: 'There was an error while executing this command!',
+          ephemeral: true
+        });
       }
     }
   }

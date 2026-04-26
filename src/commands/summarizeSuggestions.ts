@@ -14,8 +14,18 @@ export = {
   
     async execute(interaction: Discord.ChatInputCommandInteraction) {
       const currentUser = await USER.find({discord_id: interaction.user.id});
-      if (currentUser.length === 0) return await interaction.editReply('You are not a member of the JAMHacks community.');
-      if (currentUser[0].isAdmin === false) return await interaction.editReply('You are not an admin.');
+      if (currentUser.length === 0)
+        return await interaction.reply({
+          content: 'You are not a member of the JAMHacks community.',
+          ephemeral: true
+        });
+      if (!currentUser[0].isAdmin)
+        return await interaction.reply({
+          content: 'You are not an admin.',
+          ephemeral: true
+        });
+
+      await interaction.deferReply();
 
       const allUsers = await USER.find({});
       const allSuggestionResponses = [];
@@ -29,7 +39,8 @@ export = {
 
       const jamJamResponse = await getJamJamResponse(allSuggestionResponses, prompt);
 
-      if (!jamJamResponse) return null;
+      if (!jamJamResponse)
+        return await interaction.editReply('JamJam did not return a response.');
       await interaction.editReply(jamJamResponse);
     }
 }
