@@ -35,7 +35,7 @@ export = {
       );
     } else {
       await interaction.reply(
-        `Sorry, my database records does not show their ever being a record of <@${interaction.user.id}> registering for 10, contact someone with the Organizer role if you believe that this is a mistake`
+        `Sorry, my database records do not show there ever being a record of <@${interaction.user.id}> registering for JAMHacks 10, please contact someone with the Organizer role if you believe that this is a mistake`
       );
     }
   }
