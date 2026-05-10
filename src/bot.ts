@@ -10,6 +10,7 @@ class Bot {
   constructor(TOKEN: string) {
     this.CLIENT = new Discord.Client({
       intents: [
+        Discord.GatewayIntentBits.GuildMembers,
         Discord.GatewayIntentBits.Guilds,
         Discord.GatewayIntentBits.MessageContent,
         Discord.GatewayIntentBits.GuildMessages
