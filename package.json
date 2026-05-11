@@ -20,6 +20,12 @@
     "url": "https://github.com/Jamhacks-Hackathon/JamJam/issues"
   },
   "homepage": "https://github.com/Jamhacks-Hackathon/JamJam#readme",
+  "nodemonConfig": {
+    "ignore": [
+      "src/commands/alldiscordmembers.json",
+      "src/commands/rsvpdiscordmembers.json"
+    ]
+  },
   "dependencies": {
     "@google/genai": "^1.50.1",
     "@types/node": "^18.19.87",
