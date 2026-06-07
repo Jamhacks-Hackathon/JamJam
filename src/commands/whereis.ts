@@ -1,5 +1,6 @@
 import { Discord } from "../index";
 import path from "path";
+import fs from "fs";
 /*
 Command that allows JAMHacks hackers to find out where important venues are.
 E.g:
@@ -13,8 +14,8 @@ const locationReplies: Record<string, string> = {
   "hackerCheckIn": "Hacker Check-In will be held in the 1829 open space (Main Area) of PSE/E7",
   "washrooms": "Washrooms are located in the same area of each floor.",
   "openingCeremony": "The Opening Ceremony is located in the IDEAS Clinic (Room 1427) in PSE/E7.",
-  "closingCeremony": "The Opening Ceremony is located in the IDEAS Clinic (Room 1427) in PSE/E7.",
-  "judgingRooms": "The Judging Rooms are located in Rooms 2454 - 2466 in PSE/E7.",
+  "closingCeremony": "The Closing Ceremony is located in the IDEAS Clinic (Room 1427) in PSE/E7.",
+  "judgingRooms": "The Judging Rooms are located on the second floor of PSE/E7.",
   "organizerRoom": "The organizer room is located in Room 2357 in PSE/E7.",
   "sleepingRooms": "The sleeping rooms are located in Rooms 2324 and 2328 in PSE/E7. Room 2324 will be an all-gender sleeping room, and Room 2328 will be designed to females.",
   "foodArea": "The food area for all hacker meals is located in the 2472 open space (Dining Area) of PSE/E7.",
@@ -47,7 +48,7 @@ const imagePaths: Record<string, string> = {
   "organizerRoom": path.join(__dirname, "../assets/organizerroom.png"),
   "sleepingRooms": path.join(__dirname, "../assets/sleepingRooms.png"),
   "foodArea": path.join(__dirname, "../assets/diningArea.png"),
-  "sponsorsArea": path.join(__dirname, "../assets/sponsorsArea.png"),
+  "sponsorsArea": path.join(__dirname, "../assets/sponsorArea.png"),
 
   // Activities
   "networkingAndTeamBuilding": path.join(__dirname, "../assets/ideasClinic.png"),
@@ -76,27 +77,27 @@ export = {
       .setRequired(true)
       .addChoices(
         {name: "Hacker Check-In", value: "hackerCheckIn"},
-        // {name: "Washrooms", value: "washrooms"},
-        // {name: "Opening Ceremony", value: "openingCeremony"},
-        // {name: "Closing Ceremony", value: "closingCeremony"},
-        // {name: "Judging Rooms", value: "judgingRooms"},
-        // {name: "Organizer Room", value: "organizerRoom"},
-        // {name: "Sleeping Rooms", value: "sleepingRooms"},
-        // {name: "Food Area", value: "foodArea"},
-        // {name: "Sponsors Area", value: "sponsorsArea"},
-        // {name: "Networking and Team-Building", value: "networkingAndTeamBuilding"},
-        // {name: "Workshop: Game Development", value: "gameDevelopment"},
-        // {name: "Workshop: CLIs & Effective Terminal Use", value: "CLIAndTerminal"},
-        // {name: "Spicy Noodle Challenge", value: "spicyNoodleChallenge"},
-        // {name: "Cup Stacking", value: "cupStacking"},
-        // {name: "Musical Chairs", value: "musicalChairs"},
-        // {name: "Custom Keychain Making", value: "customKeychainMaking"},
-        // {name: "Trivia", value: "trivia"},
-        // {name: "Ping Pong Tournament", value: "pingPongTourney"},
-        // {name: "Karaoke", value: "karaoke"},
-        // {name: "Video Game Tournament", value: "videoGameTourney"},
-        // {name: "Poker", value: "poker"},
-        // {name: "Photobooth", value: "photobooth"}
+        {name: "Washrooms", value: "washrooms"},
+        {name: "Opening Ceremony", value: "openingCeremony"},
+        {name: "Closing Ceremony", value: "closingCeremony"},
+        {name: "Judging Rooms", value: "judgingRooms"},
+        {name: "Organizer Room", value: "organizerRoom"},
+        {name: "Sleeping Rooms", value: "sleepingRooms"},
+        {name: "Food Area", value: "foodArea"},
+        {name: "Sponsors Area", value: "sponsorsArea"},
+        {name: "Networking and Team-Building", value: "networkingAndTeamBuilding"},
+        {name: "Workshop: Game Development", value: "gameDevelopment"},
+        {name: "Workshop: CLIs & Effective Terminal Use", value: "CLIAndTerminal"},
+        {name: "Spicy Noodle Challenge", value: "spicyNoodleChallenge"},
+        {name: "Cup Stacking", value: "cupStacking"},
+        {name: "Musical Chairs", value: "musicalChairs"},
+        {name: "Custom Keychain Making", value: "customKeychainMaking"},
+        {name: "Trivia", value: "trivia"},
+        {name: "Ping Pong Tournament", value: "pingPongTourney"},
+        {name: "Karaoke", value: "karaoke"},
+        {name: "Video Game Tournament", value: "videoGameTourney"},
+        {name: "Poker", value: "poker"},
+        {name: "Photobooth", value: "photobooth"}
       )),
   
     async execute(interaction: Discord.ChatInputCommandInteraction) {
@@ -111,15 +112,12 @@ export = {
         reply = locationReplies[ locationValue ];
       }
 
-      if (imagePaths[ locationValue ] === null) {
-        image = new Discord.AttachmentBuilder( imagePaths[ locationValue ] );
-      } else {
-        image = new Discord.AttachmentBuilder( imagePaths[ locationValue ] );
-      }
+      const imagePath = imagePaths[locationValue];
+      const files = imagePath ? [new Discord.AttachmentBuilder(fs.readFileSync(imagePath), {name: "image.png"})] : [];
 
       await interaction.reply({
         content: reply, 
-        files: [image]
+        files,
       });
 
     },
